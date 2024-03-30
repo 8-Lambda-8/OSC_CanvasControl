@@ -21,9 +21,14 @@ void STOP() {
 void setup() {
   Serial.begin(115200);
   Serial.println("SETUP");
-  
+
   pinMode(upPin, OUTPUT);
   pinMode(downPin, OUTPUT);
+
+  // move UP
+  UP();
+  delay(20 * 1000);
+  STOP();
 }
 
 void loop() {
