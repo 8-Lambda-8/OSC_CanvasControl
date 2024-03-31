@@ -104,11 +104,11 @@ void loop() {
   switch (state) {
     case 1:  // UP
       position -= millis() - lastMillis;
-      if (position < targetPosition) STOP();
+      if (position <= targetPosition) STOP();
       break;
     case 2:  // DOWN
       position += millis() - lastMillis;
-      if (position > targetPosition) STOP();
+      if (position >= targetPosition) STOP();
       break;
     default:
       break;
