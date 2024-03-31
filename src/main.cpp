@@ -1,4 +1,9 @@
 #include <Arduino.h>
+#include <WebServer_WT32_ETH01.h>
+
+WiFiUDP Udp;
+const unsigned int localPort = 8888;
+IPAddress remoteIp;
 
 #define upPin 14
 #define downPin 15
@@ -36,6 +41,24 @@ void setup() {
   Serial.begin(115200);
   Serial.println("SETUP");
 
+  while (!Serial);
+
+  Serial.print("\nStarting UDPSendReceive on " + String(ARDUINO_BOARD));
+  Serial.println(" with " + String(SHIELD_TYPE));
+  Serial.println(WEBSERVER_WT32_ETH01_VERSION);
+
+  WT32_ETH01_onEvent();
+  ETH.begin(ETH_PHY_ADDR, ETH_PHY_POWER);
+  WT32_ETH01_waitForConnect();
+
+  Serial.println(F("\nStarting connection to server..."));
+  Udp.begin(localPort);
+
+  Serial.print(F("Listening on port "));
+  Serial.println(localPort);
+
+  Serial.println("END SETUP");
+
   pinMode(upPin, OUTPUT);
   pinMode(downPin, OUTPUT);
 
@@ -72,4 +95,15 @@ void loop() {
       break;
   }
   lastMillis = millis();
+
+  int size = Udp.parsePacket();
+  if (size) {
+    Serial.print(F("Received packet of size "));
+    Serial.println(size);
+    Serial.print(F("From "));
+    remoteIp = Udp.remoteIP();
+    Serial.print(remoteIp);
+    Serial.print(F(", port "));
+    Serial.println(Udp.remotePort());
+  }
 }
