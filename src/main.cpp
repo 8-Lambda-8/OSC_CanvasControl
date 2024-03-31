@@ -22,13 +22,13 @@ void UP() {
 
 void DOWN() {
   state = 2;
-  digitalWrite(upPin, LOW);
-  digitalWrite(downPin, HIGH);
+  digitalWrite(upPin, HIGH);
+  digitalWrite(downPin, LOW);
 };
 
 void STOP() {
   state = 0;
-  digitalWrite(upPin, LOW);
+  digitalWrite(upPin, HIGH);
   digitalWrite(downPin, HIGH);
 };
 
