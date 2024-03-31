@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <WebServer_WT32_ETH01.h>
 
+#include <OSCMessage.h>
+#include <OSCBoards.h>
+
 WiFiUDP Udp;
 const unsigned int localPort = 8888;
 IPAddress remoteIp;
@@ -80,6 +83,22 @@ void goTo(uint32_t pos) {
   if (position < targetPosition) DOWN();
 }
 
+void move(OSCMessage& msg, int addrOffset) {
+  addrOffset++;
+  const char* addr = (msg.getAddress() + addrOffset);
+  Serial.println();
+  Serial.print(addr);
+  Serial.print(" ");
+  if (!msg.isInt(0)) return;
+  Serial.println(msg.getInt(0));
+
+  if (addr[0] == 't' && addr[1] == 'o') {
+    goTo(msg.getInt(0) * 1000);
+  } else if (addr[0] == 'b' && addr[1] == 'y') {
+    goBy(msg.getInt(0) * 1000);
+  }
+}
+
 uint32_t lastMillis = 0;
 void loop() {
   switch (state) {
@@ -96,6 +115,7 @@ void loop() {
   }
   lastMillis = millis();
 
+  OSCMessage msg;
   int size = Udp.parsePacket();
   if (size) {
     Serial.print(F("Received packet of size "));
@@ -105,5 +125,13 @@ void loop() {
     Serial.print(remoteIp);
     Serial.print(F(", port "));
     Serial.println(Udp.remotePort());
+
+    while (size--) msg.fill(Udp.read());
+
+    if (!msg.hasError()) {
+      msg.route("/CanvasControl/move", move);
+    } else {
+      Serial.println("OSC msg error");
+    }
   }
 }
