@@ -11,13 +11,13 @@ IPAddress remoteIp;
 #define upPin 14
 #define downPin 15
 
-uint8_t state = 0;
 /**
  * @brief
- * 0 Stop
- * 1 UP
- * 2 DOWN
+ * 0=Stop;
+ * 1=UP;
+ * 2=DOWN
  */
+uint8_t state = 0;
 
 uint32_t position = 0;
 uint32_t targetPosition = 0;
