@@ -21,6 +21,7 @@ IPAddress remoteIp;
 uint8_t state = 0;
 
 uint32_t position = 0;
+uint32_t positionLast = 0;
 uint32_t targetPosition = 0;
 
 void UP() {
@@ -84,9 +85,7 @@ void goTo(uint32_t pos) {
   if (position < targetPosition) DOWN();
 }
 
-void get(OSCMessage& msgIn, int addrOffset) {
-  Serial.print("Send get Response: ");
-  Serial.println(position / 1000);
+void sendPosition() {
   OSCMessage msg("/CanvasControl/position");
   msg.add(position / 1000);
 
@@ -94,6 +93,12 @@ void get(OSCMessage& msgIn, int addrOffset) {
   msg.send(Udp);
   Udp.endPacket();
   msg.empty();
+}
+
+void get(OSCMessage& msgIn, int addrOffset) {
+  Serial.print("Send get Response: ");
+  Serial.println(position / 1000);
+  sendPosition();
 }
 
 void move(OSCMessage& msg, int addrOffset) {
@@ -130,6 +135,11 @@ void loop() {
     default:
       break;
   }
+  if (position / 1000 != positionLast / 1000) {
+    Serial.println(position / 1000);
+    sendPosition();
+  }
+  positionLast = position;
   lastMillis = millis();
 
   OSCMessage msg;
