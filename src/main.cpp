@@ -5,7 +5,7 @@
 #include <OSCBoards.h>
 
 WiFiUDP Udp;
-const unsigned int localPort = 8888;
+const unsigned int localPort = 8001;
 IPAddress remoteIp;
 
 #define upPin 14
