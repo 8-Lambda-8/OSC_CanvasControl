@@ -121,6 +121,11 @@ void setHome(OSCMessage& msg, int addrOffset) {
   position = 0;
 }
 
+void resetHome(OSCMessage& msg, int addrOffset) {
+  position = 50;
+  goTo(0);
+}
+
 uint32_t lastMillis = 0;
 void loop() {
   switch (state) {
@@ -158,6 +163,7 @@ void loop() {
     if (!msg.hasError()) {
       msg.route("/CanvasControl/move", move);
       msg.route("/CanvasControl/setHome", setHome);
+      msg.route("/CanvasControl/resetHome", resetHome);
       msg.route("/CanvasControl/get", get);
     } else {
       Serial.println("OSC msg error");
