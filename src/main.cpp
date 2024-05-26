@@ -20,9 +20,9 @@ IPAddress remoteIp;
  */
 uint8_t state = 0;
 
-uint32_t position = 0;
-uint32_t positionLast = 0;
-uint32_t targetPosition = 0;
+int32_t position = 0;
+int32_t positionLast = 0;
+int32_t targetPosition = 0;
 
 void UP() {
   state = 1;
@@ -79,7 +79,7 @@ void goBy(int32_t distance) {
   if (position < targetPosition) DOWN();
 }
 
-void goTo(uint32_t pos) {
+void goTo(int32_t pos) {
   targetPosition = pos;
   if (position > targetPosition) UP();
   if (position < targetPosition) DOWN();
