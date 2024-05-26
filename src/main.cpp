@@ -5,6 +5,7 @@
 #include <OSCBoards.h>
 
 WiFiUDP Udp;
+const unsigned int console_Port = 8000;
 const unsigned int localPort = 8001;
 IPAddress remoteIp;
 
@@ -83,6 +84,18 @@ void goTo(uint32_t pos) {
   if (position < targetPosition) DOWN();
 }
 
+void get(OSCMessage& msgIn, int addrOffset) {
+  Serial.print("Send get Response: ");
+  Serial.println(position / 1000);
+  OSCMessage msg("/CanvasControl/position");
+  msg.add(position / 1000);
+
+  Udp.beginPacket(remoteIp, console_Port);
+  msg.send(Udp);
+  Udp.endPacket();
+  msg.empty();
+}
+
 void move(OSCMessage& msg, int addrOffset) {
   addrOffset++;
   const char* addr = (msg.getAddress() + addrOffset);
@@ -135,6 +148,7 @@ void loop() {
     if (!msg.hasError()) {
       msg.route("/CanvasControl/move", move);
       msg.route("/CanvasControl/setHome", setHome);
+      msg.route("/CanvasControl/get", get);
     } else {
       Serial.println("OSC msg error");
     }
