@@ -122,7 +122,7 @@ void setHome(OSCMessage& msg, int addrOffset) {
 }
 
 void resetHome(OSCMessage& msg, int addrOffset) {
-  position = 50;
+  position = 50 * 1000;
   goTo(0);
 }
 
